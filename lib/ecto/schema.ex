@@ -6,7 +6,7 @@ defmodule Piazza.Ecto.Schema do
       use Ecto.Schema
       import Ecto.Query
       import Ecto.Changeset
-      import Core.DB.Schema
+      import Piazza.Ecto.Schema
       import EctoEnum
 
       @primary_key {:id, :binary_id, autogenerate: true}
@@ -28,7 +28,7 @@ defmodule Piazza.Ecto.Schema do
       if unquote(derive_json) do
         defimpl Jason.Encoder, for: __MODULE__ do
           def encode(struct, opts) do
-            Core.DB.Schema.mapify(struct)
+            Piazza.Ecto.Schema.mapify(struct)
             |> Jason.Encode.map(opts)
           end
         end
