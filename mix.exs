@@ -1,7 +1,7 @@
-defmodule Piazza.MixProject do
+defmodule PiazzaCore.MixProject do
   use Mix.Project
 
-  @vsn File.read!("VERSION")
+  @vsn "0.1.1"
 
   def project do
     [
