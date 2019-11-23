@@ -1,7 +1,7 @@
 defmodule PiazzaCore.MixProject do
   use Mix.Project
 
-  @vsn "0.1.2"
+  @vsn "0.1.3"
 
   def project do
     [
@@ -37,7 +37,8 @@ defmodule PiazzaCore.MixProject do
       {:ecto_sql, "~> 3.1"},
       {:ecto_enum, "~> 1.3"},
       {:gen_stage, "~> 0.14.2"},
-      {:ex_doc, "~> 0.14", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
+      {:ex_crypto, "~> 0.10"}
     ]
   end
 
