@@ -19,12 +19,12 @@ defmodule Piazza.Crypto.RSA do
       do: {:ok, {pk_pem, pub_pem}}
   end
 
-  @spec encrypt(binary, RSAPrivateKey.t) :: {:ok, binary} | {:error, term}
+  @spec encrypt(binary, RSAPrivateKey.t) :: {:ok, binary} | :error
   def encrypt(str, %RSAPrivateKey{} = priv) when is_binary(str) do
     ExPublicKey.encrypt_private(str, priv)
   end
 
-  @spec decrypt(binary, RSAPublicKey.t) :: {:ok, binary} | {:error, term}
+  @spec decrypt(binary, RSAPublicKey.t) :: {:ok, binary} | :error
   def decrypt(str, %RSAPublicKey{} = pub) when is_binary(str) do
     ExPublicKey.decrypt_public(str, pub)
   end
