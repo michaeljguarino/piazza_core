@@ -7,7 +7,7 @@ defmodule Piazza.Ecto.EncryptedString do
   use Ecto.Type
   @header "%ENC%"
 
-  def type, do: :string
+  def type, do: :binary
 
   def cast(str) when is_binary(str), do: {:ok, str}
   def cast(_), do: :error

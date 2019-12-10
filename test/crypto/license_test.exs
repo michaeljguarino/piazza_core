@@ -8,7 +8,10 @@ defmodule Piazza.Crypto.LicenseTest do
       {:ok, license} = RSA.encrypt("license str", priv)
 
       me = self()
-      on_verify = fn res -> send me, res end
+      on_verify = fn res, state ->
+        send me, res
+        state
+      end
       {:ok, pub_pem} = ExPublicKey.pem_encode(pub)
       {:ok, _} = License.start_link(license, pub_pem, fn _ -> :ok end, on_verify)
 

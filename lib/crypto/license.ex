@@ -5,7 +5,7 @@ defmodule Piazza.Crypto.License do
   defmodule State, do: defstruct [:license, :on_failure, :on_verify, :public_key]
   @interval 60 * 1000
 
-  def start_link(license, public_key, on_failure, on_verify \\ fn _ -> :ok end)
+  def start_link(license, public_key, on_failure, on_verify \\ fn _, state -> state end)
         when is_function(on_failure) and is_function(on_verify) do
     GenServer.start_link(__MODULE__, [license, public_key, on_failure, on_verify], name: __MODULE__)
   end
@@ -22,8 +22,7 @@ defmodule Piazza.Crypto.License do
   ) do
     case RSA.decrypt(license, pub) do
       {:ok, _} = res ->
-        on_verify.(res)
-        {:noreply, state}
+        {:noreply, on_verify.(res, state)}
       error ->
         on_failure.(error)
         {:noreply, state}
