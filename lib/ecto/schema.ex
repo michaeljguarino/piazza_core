@@ -49,6 +49,18 @@ defmodule Piazza.Ecto.Schema do
     end
   end
 
+  def validate_one_present(changeset, [first | _] = fields) do
+    case Enum.any?(fields, &present?(changeset, &1)) do
+      true -> changeset
+      false -> add_error(changeset, first, "One of these fields must be present: #{inspect fields}")
+    end
+  end
+
+  def present?(changeset, field) do
+    value = get_field(changeset, field)
+    value && value != ""
+  end
+
   def external_type(module) do
     Macro.underscore(module)
     |> String.split("/")
