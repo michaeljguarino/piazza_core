@@ -8,15 +8,35 @@ defmodule Piazza.Crypto.LicenseTest do
       {:ok, license} = RSA.encrypt("license str", priv)
 
       me = self()
-      on_verify = fn res, state ->
+      on_verify = fn res ->
         send me, res
-        state
+        res
       end
       {:ok, pub_pem} = ExPublicKey.pem_encode(pub)
       {:ok, _} = License.start_link(license, pub_pem, fn _ -> :ok end, on_verify)
 
-      expected = RSA.decrypt(license, pub)
+      {:ok, expected} = RSA.decrypt(license, pub)
       assert_receive ^expected
+    end
+  end
+
+  describe "#fetch" do
+    test "You can fetch parsed valid licenses" do
+      {:ok, {priv, pub}} = RSA.generate_keypair()
+      {:ok, license} = RSA.encrypt("license str", priv)
+
+      me = self()
+      on_verify = fn res ->
+        send me, res
+        res
+      end
+      {:ok, pub_pem} = ExPublicKey.pem_encode(pub)
+      {:ok, pid} = License.start_link(license, pub_pem, fn _ -> :ok end, on_verify)
+
+      {:ok, expected} = RSA.decrypt(license, pub)
+      assert_receive ^expected
+
+      "license str" = License.fetch(pid)
     end
   end
 

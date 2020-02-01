@@ -21,11 +21,32 @@ defmodule Piazza.Crypto.RSA do
 
   @spec encrypt(binary, RSAPrivateKey.t) :: {:ok, binary} | :error
   def encrypt(str, %RSAPrivateKey{} = priv) when is_binary(str) do
-    ExPublicKey.encrypt_private(str, priv)
+    {:ok, aes_256_key} = ExCrypto.generate_aes_key(:aes_256, :bytes)
+
+    with {:ok, encrypted_key} <- ExPublicKey.encrypt_private(aes_256_key, priv),
+         {:ok, encryption_tuple} <- ExCrypto.encrypt(aes_256_key, str),
+      do: {:ok, "#{encrypted_key}::#{encode_payload(encryption_tuple)}"}
   end
 
   @spec decrypt(binary, RSAPublicKey.t) :: {:ok, binary} | :error
   def decrypt(str, %RSAPublicKey{} = pub) when is_binary(str) do
-    ExPublicKey.decrypt_public(str, pub)
+
+    with [encrypted_key, encrypted_payload] <- String.split(str, "::"),
+         {:ok, decrypted_key} <- ExPublicKey.decrypt_public(encrypted_key, pub),
+         {iv, cipher} <- decode_payload(encrypted_payload) do
+      ExCrypto.decrypt(decrypted_key, iv, cipher)
+    else
+      _ -> :error
+    end
+  end
+
+  defp encode_payload({iv, txt}) when byte_size(iv) == 16 do
+    Base.url_encode64(iv <> txt)
+  end
+
+  defp decode_payload(payload) do
+    decoded = Base.url_decode64!(payload)
+    len = byte_size(decoded)
+    {binary_part(decoded, 0, 16), binary_part(decoded, 16, len - 16)}
   end
 end
