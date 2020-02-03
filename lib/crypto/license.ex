@@ -1,9 +1,22 @@
 defmodule Piazza.Crypto.License do
+  @moduledoc """
+  Genserver for managing the license verification lifecycle.  The
+  protocol is basically:
+
+  1. On start, decode the license and pass to either on_failure or on_verify depending
+     on the result.
+  2. At a fixed interval, reverify the license, in case it's expired/changed.
+
+  The verification interval can be configured with
+  ```
+  config :piazza_core, :license_interval, interval_in_ms
+  ```
+  """
   use GenServer
   alias Piazza.Crypto.RSA
 
   defmodule State, do: defstruct [:license, :on_failure, :on_verify, :public_key, :parsed]
-  @interval 60 * 1000
+  @interval Application.get_env(:piazza_core, :license_interval, 60 * 1000)
 
   def start_link(license, public_key, on_failure, on_verify \\ fn _, state -> state end)
         when is_function(on_failure) and is_function(on_verify) do
