@@ -9,8 +9,6 @@ defmodule Piazza.Ecto.ReleaseTasks do
     :ecto_sql # If using Ecto 3.0 or higher
   ]
 
-  @repos Application.get_env(:piazza_core, :repos)
-
   def migrate(_argv) do
     start_services()
 
@@ -46,7 +44,7 @@ defmodule Piazza.Ecto.ReleaseTasks do
     IO.puts("Starting repos..")
 
     # pool_size can be 1 for ecto < 3.0
-    Enum.each(@repos, & &1.start_link(pool_size: 2))
+    Enum.each(repos(), & &1.start_link(pool_size: 2))
   end
 
   defp stop_services do
@@ -55,7 +53,7 @@ defmodule Piazza.Ecto.ReleaseTasks do
   end
 
   defp run_migrations(direction \\ :up) do
-    Enum.each(@repos, &run_migrations_for(&1, direction))
+    Enum.each(repos(), &run_migrations_for(&1, direction))
   end
 
   defp run_migrations_for(repo, direction) do
@@ -66,11 +64,11 @@ defmodule Piazza.Ecto.ReleaseTasks do
   end
 
   # defp drop_db() do
-  #   Enum.each(@repos, & &1.__adapter__.storage_down(&1.config))
+  #   Enum.each(repos(), & &1.__adapter__.storage_down(&1.config))
   # end
 
   defp run_seeds do
-    Enum.each(@repos, &run_seeds_for/1)
+    Enum.each(repos(), &run_seeds_for/1)
   end
 
   defp run_seeds_for(repo) do
@@ -106,4 +104,6 @@ defmodule Piazza.Ecto.ReleaseTasks do
 
     Path.join([priv_dir, repo_underscore, filename])
   end
+
+  defp repos(), do: Application.get_env(:piazza_core, :repos)
 end
