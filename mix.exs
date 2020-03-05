@@ -1,7 +1,7 @@
 defmodule PiazzaCore.MixProject do
   use Mix.Project
 
-  @vsn "0.2.7"
+  @vsn "0.2.8"
 
   def project do
     [

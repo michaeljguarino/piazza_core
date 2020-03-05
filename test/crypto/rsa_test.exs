@@ -14,6 +14,19 @@ defmodule Piazza.Crypto.RSATest do
 
       assert dec == test_str
     end
+
+    test "It fails if tampered with" do
+      {:ok, {priv, pub}} = RSA.generate_keypair()
+      test_str = "something secret"
+      {:ok, val} = RSA.encrypt(test_str, priv)
+
+      [enc_key , sig, _] = String.split(val, "::")
+      {:ok, decrypted_key} = ExPublicKey.decrypt_public(enc_key, pub)
+
+      {:ok, {iv, cipher}} = ExCrypto.encrypt(decrypted_key, "tampered string")
+      fake_license = "#{enc_key}::#{sig}::#{Base.url_encode64(iv <> cipher)}"
+      :error = RSA.decrypt(fake_license, pub)
+    end
   end
 
   describe "#pem_encode" do
