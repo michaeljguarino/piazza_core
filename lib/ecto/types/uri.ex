@@ -1,5 +1,5 @@
 defmodule Piazza.Ecto.Types.URI do
-  @behaviour Ecto.Type
+  use Ecto.Type
 
   def type, do: :string
 

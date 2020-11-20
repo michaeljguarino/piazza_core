@@ -92,4 +92,16 @@ defmodule Piazza.Ecto.Schema do
       unquote(index_name)
     end
   end
+
+  defmacro boolean_fields(fields, default \\ false) do
+    quoted = Enum.map(fields, fn f ->
+      quote do
+        field(unquote(f), :boolean, default: unquote(default))
+      end
+    end)
+
+    quote do
+      unquote(quoted)
+    end
+  end
 end
