@@ -7,11 +7,9 @@ defmodule Piazza.Crypto.RSATest do
       {:ok, {priv, pub}} = RSA.generate_keypair()
       test_str = "something secret"
       {:ok, val} = RSA.encrypt(test_str, priv)
-
       assert val != test_str
 
       {:ok, dec} = RSA.decrypt(val, pub)
-
       assert dec == test_str
     end
 
@@ -20,11 +18,12 @@ defmodule Piazza.Crypto.RSATest do
       test_str = "something secret"
       {:ok, val} = RSA.encrypt(test_str, priv)
 
-      [enc_key , sig, _] = String.split(val, "::")
-      {:ok, decrypted_key} = ExPublicKey.decrypt_public(enc_key, pub)
+      [enc_key, sig, _] = String.split(val, RSA.sep())
+      {:ok, decrypted_key} = String.replace(enc_key, ~r/\s+/, "")
+                             |> ExPublicKey.decrypt_public(pub)
 
       {:ok, {iv, cipher}} = ExCrypto.encrypt(decrypted_key, "tampered string")
-      fake_license = "#{enc_key}::#{sig}::#{Base.url_encode64(iv <> cipher)}"
+      fake_license = "#{enc_key}#{RSA.sep()}#{sig}#{RSA.sep()}#{Base.url_encode64(iv <> cipher)}"
       :error = RSA.decrypt(fake_license, pub)
     end
   end
