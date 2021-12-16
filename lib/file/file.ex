@@ -1,6 +1,6 @@
 defmodule Piazza.File do
   def hash(path) do
-    File.stream!(path)
+    File.stream!(path,[],2048)
     |> Enum.reduce(:crypto.hash_init(:sha256), &:crypto.hash_update(&2, &1))
     |> :crypto.hash_final()
     |> Base.encode16()

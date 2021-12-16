@@ -4,7 +4,7 @@ defmodule Piazza.Ecto.UUIDTest do
 
   describe "#generate_monotonic" do
     test "It won't bork" do
-      uuid = UUID.generate_monotonic()
+      uuid = UUID.generate_monotonic() |> IO.inspect()
       {:ok, {timestamp, rand}} = UUID.decode(uuid)
 
       assert is_integer(timestamp)
