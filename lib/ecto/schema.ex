@@ -87,7 +87,7 @@ defmodule Piazza.Ecto.Schema do
   end
 
   defmacro index_name(table, fields) do
-    index_name = :"#{table}_#{Enum.join(fields, "_")}"
+    index_name = :"#{table}_#{Enum.join(fields, "_")}_index"
     quote do
       unquote(index_name)
     end
