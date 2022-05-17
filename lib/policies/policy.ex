@@ -26,7 +26,7 @@ defmodule Piazza.Policy do
   end
 
   def error({:error, _}, msg), do: {:error, msg}
-  def error(pass), do: pass
+  def error(pass, _), do: pass
 
   # TODO: parallelize policy resolutions
   def resolve_policy(_, resource, _, []), do: {:ok, resource}
