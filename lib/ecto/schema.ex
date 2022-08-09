@@ -13,6 +13,8 @@ defmodule Piazza.Ecto.Schema do
       @timestamps_opts [type: :utc_datetime_usec]
       @foreign_key_type :binary_id
 
+      @type t :: %__MODULE__{}
+
       def any(), do: from(r in __MODULE__)
 
       def for_id(query \\ __MODULE__, id), do: from(r in query, where: r.id == ^id)
