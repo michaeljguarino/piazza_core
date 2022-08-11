@@ -51,6 +51,15 @@ defmodule Piazza.Ecto.Schema do
     end
   end
 
+  def change_markers(changeset, markers) do
+    Enum.reduce(markers, changeset, fn {field, marker}, ch ->
+      case get_change(changeset, field) do
+        nil -> put_change(ch, marker, false)
+        _ -> put_change(ch, marker, true)
+      end
+    end)
+  end
+
   def validate_one_present(changeset, [first | _] = fields) do
     case Enum.any?(fields, &present?(changeset, &1)) do
       true -> changeset
