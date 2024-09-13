@@ -10,7 +10,7 @@ defmodule Piazza.PubSub.Broadcaster do
 
       @doc "Sends an event asynchronously"
       def notify(event) do
-        GenStage.cast(__MODULE__, {:notify, %{event | source_pid: self()}})
+        GenStage.cast(__MODULE__, {:notify, %{event | source_pid: event.source_pid || self()}})
       end
 
       ## Callbacks
