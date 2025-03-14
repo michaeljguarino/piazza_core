@@ -14,7 +14,7 @@ defmodule Piazza.Ecto.EncryptedString do
 
   def load(@header <> str) do
     with {:ok, b64ed} <- Base.url_decode64(str),
-         %{keyed: keyed} <- Envelope.decode(b64ed),
+         %Envelope{keyed: keyed} <- Envelope.decode(b64ed),
          {:ok, {initv, cipher}} <- decode_payload(keyed) do
       ExCrypto.decrypt(key(), initv, cipher)
     end
@@ -26,7 +26,7 @@ defmodule Piazza.Ecto.EncryptedString do
     with {:ok, {initv, cipher}} <- ExCrypto.encrypt(key(), str),
          {:ok, encoded} <- encode_payload(initv, cipher) do
       {:ok, @header <>
-            (Envelope.new(keyed: encoded)
+            (%Envelope{keyed: encoded}
             |> Envelope.encode()
             |> Base.url_encode64())}
     end

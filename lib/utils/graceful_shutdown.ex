@@ -12,7 +12,7 @@ defmodule Piazza.GracefulShutdown do
   use GenServer
   require Logger
 
-  @shutdown_delay Application.get_env(:piazza_core, :shutdown_delay) || 0
+  @shutdown_delay Application.compile_env(:piazza_core, :shutdown_delay) || 0
 
   def start_link(args \\ :ok) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)

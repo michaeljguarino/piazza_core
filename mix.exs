@@ -35,12 +35,12 @@ defmodule PiazzaCore.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ecto_sql, "~> 3.1"},
+      {:ecto_sql, "~> 3.12"},
       {:ecto_enum, "~> 1.4"},
       {:gen_stage, "~> 0.14.2"},
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:ex_crypto, "~> 0.10", git: "https://github.com/ntrepid8/ex_crypto"},
-      {:protobuf, "~> 0.5.3"}
+      {:protobuf, "~> 0.14"}
     ]
   end
 

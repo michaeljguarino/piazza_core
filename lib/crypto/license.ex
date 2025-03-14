@@ -16,7 +16,7 @@ defmodule Piazza.Crypto.License do
   alias Piazza.Crypto.RSA
 
   defmodule State, do: defstruct [:license, :on_failure, :on_verify, :public_key, :parsed]
-  @interval Application.get_env(:piazza_core, :license_interval, 60 * 1000)
+  @interval Application.compile_env(:piazza_core, :license_interval, 60 * 1000)
 
   def start_link(license, public_key, on_failure, on_verify \\ fn _, state -> state end)
         when is_function(on_failure) and is_function(on_verify) do
